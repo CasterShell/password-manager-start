@@ -1,4 +1,5 @@
 import tkinter
+from tabnanny import check
 from tkinter import PhotoImage
 from tkinter import messagebox
 import random
@@ -61,7 +62,26 @@ def save():
             user_name_em.delete(0, tkinter.END)
             password_box.delete(0, tkinter.END)
 
-# ---------------------------- PASSWORD VISIBILITY ------------------------------- #
+# ---------------------------- PASSWORD SEARCH ------------------------------- #
+def find_password():
+    website = website_entry.get()
+    try:
+        with open("user.json") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error",message="No data file found")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(title=website,message=f"Email: {email}\n Password:{password}")
+        else:
+            messagebox.showinfo(title="Error", message = f"No details for {website} exist currently")
+
+
+    #get len of user input and match to user.json entry
+
+
 
 
 
@@ -111,12 +131,17 @@ password_box.grid(column=1, row=3, sticky ="w")
 
 password_button = tkinter.Button()
 password_button.config(text="Generate Password",command = generate_password, width=30,)
-password_button.grid(column=1, row=4, columnspan=2, sticky="w")
+password_button.grid(column=3, row=4, columnspan=2, sticky="w")
 
 
 #add button
 add_button = tkinter.Button()
 add_button.config(text="Add", width=30,command = save)
 add_button.grid(column=1, row=5, columnspan=2,sticky="w")
+
+#add search button
+search_button = tkinter.Button()
+search_button.config(text="Search",width=30, command = find_password)
+search_button.grid(column=3,row=1,columnspan=1, sticky="e",)
 
 window.mainloop()
